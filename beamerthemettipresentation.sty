@@ -5,6 +5,19 @@
     {\tti@horizontaloffset}
     {\tti@horizontaloffset}
 
+\AtBeginDocument{
+  \abovedisplayskip=0.25em
+  \belowdisplayskip=0.25em
+  \abovedisplayshortskip=0.1em
+  \belowdisplayshortskip=0.1em
+  \textfloatsep=0.1em
+  \floatsep=0.1em
+  \intextsep=0.1em
+  \dbltextfloatsep=\textfloatsep
+  \dblfloatsep=\floatsep
+  \abovecaptionskip=0.2ex
+  \belowcaptionskip=0.2ex
+}
 
 % font
 
@@ -22,7 +35,7 @@
 \setbeamerfont*{footnote}{size=\fontsize{6pt}{7.5pt}\selectfont}
 
 \setbeamerfont*{title}{size=\LARGE}
-\setbeamerfont*{author}{size=\large}
+\setbeamerfont*{author}{size=\normalsize}
 \setbeamerfont*{institute}{parent=author}
 
 \setbeamerfont*{headline}{size=\scriptsize}
@@ -42,6 +55,16 @@
 \setbeamercolor{enumerate item}{fg=black}
 
 % templates
+
+%% block
+
+\setbeamertemplate{block begin}{
+  \begin{beamercolorbox}[sep=1ex,wd=\textwidth]{block title}
+    \large
+    \insertblocktitle
+  \end{beamercolorbox}
+}
+\setbeamertemplate{block end}{}
 
 %% enumeration
 
@@ -78,7 +101,8 @@
   \vspace{4em}
   {\usebeamercolor{institute}\usebeamerfont{institute}\insertinstitute}
   \hspace{2ex}
-  {\usebeamercolor{author}\usebeamerfont{author}\insertauthor}\par
+  {\usebeamercolor{author}\usebeamerfont{author}%
+   \parbox{\textwidth}{\centering\insertauthor}}\par
 }
 
 

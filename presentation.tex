@@ -47,13 +47,17 @@
       \item 問題：構文解析、文生成
       \item 動機：SequentialなRecurrent Neural Networks (RNNs)は \\
             自然言語の潜在的な入れ子構造を考慮できていない
-      \item 構文解析または文生成のアルゴリズム
+      \item 構成要素
+        \begin{itemize}
+          \item 構文解析または文生成のアルゴリズム
+          \item NNによる生成モデル
+        \end{itemize}
     \end{itemize}
   \end{block}
 \end{frame}
 
 \begin{frame}{提案手法}
-  \begin{block}{RNNGの定義}
+  \begin{block}{RNNGの形式的な定義}
     \begin{gather*}
       RNNG := (N, \Sigma, \Theta) \\
       \begin{cases}
@@ -79,13 +83,6 @@
     \begin{itemize}
       \item スタックの要素：\term、openまたはclosedな\nt
       \item 入力バッファの要素：\term
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}{提案手法}
-  \begin{block}{構文解析のアルゴリズム}
-    \begin{itemize}
       \item 初期状態
         \begin{gather*}
           S = \emptyset \\
@@ -106,7 +103,7 @@
           \begin{tabular}{c | l}
             遷移 & 制約 \\
             \hline
-            nt(X)   & $B \neq \emptyset \wedge n < 100$ \\
+            NT(X)   & $B \neq \emptyset \wedge n < 100$ \\
             \hline
             SHIFT   & $B \neq \emptyset \wedge n \geq 1$ \\
             \hline
@@ -118,6 +115,18 @@
           \end{tabular}
         \end{table}
     \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{figure}
+      \includegraphics[width=0.9\textwidth]{fig/fig_1.png}
+    \end{figure}
+    \vspace{-1.5em} % HACK
+    \begin{figure}
+      \includegraphics[width=0.9\textwidth]{fig/fig_2.png}
+    \end{figure}
   \end{block}
 \end{frame}
 
@@ -135,13 +144,6 @@
     \begin{itemize}
       \item スタックの要素：\term、openまたはclosedな\nt
       \item 出力バッファの要素：\term
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}{提案手法}
-  \begin{block}{文生成のアルゴリズム}
-    \begin{itemize}
       \item 初期状態
         \begin{gather*}
           S = \emptyset \\
@@ -176,6 +178,18 @@
 \end{frame}
 
 \begin{frame}{提案手法}
+  \begin{block}{文生成のアルゴリズム}
+    \begin{figure}
+        \includegraphics[width=0.9\textwidth]{fig/fig_3.png}
+    \end{figure}
+    \vspace{-1.5em} % HACK
+    \begin{figure}
+        \includegraphics[width=0.9\textwidth]{fig/fig_4.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
   \begin{block}{生成モデル}
     \begin{itemize}
       \item 単語列（$x$）と構文木（$y$）の結合確率
@@ -183,9 +197,9 @@
     \begin{align*}
       p(x, y) & = \prod_{t=1}^{|a(x, y)|} p(a_t | a_{<t}) \\
               & = \prod_{t=1}^{|a(x, y)|}
-                  \frac{exp r_{a_t}^T u_t + b_{a_t}}
+                  \frac{\exp r_{a_t}^T u_t + b_{a_t}}
                       {\sum_{a' \in A_G(T_t, S_t, n_t)}
-                        exp r_{a'}^T u_t + b_{a'}} \\
+                        \exp r_{a'}^T u_t + b_{a'}} \\
       u_t & = \tanh (W[o_t; s_t; h_t] + c)
     \end{align*}
     \begin{gather*}
