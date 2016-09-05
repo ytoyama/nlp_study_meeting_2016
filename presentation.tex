@@ -17,14 +17,16 @@
 \newcommand{\arrow}{\textcolor{ttiblue}{\textbf{→}}\hspace{1ex}}
 \newcommand{\mb}[1]{\mathbf{#1}}
 \newcommand{\arrowed}[1]{\vec{\mathbf{#1}}}
-\newcommand{\opennt}{未完成の非終端記号}
+\newcommand{\term}{終端記号}
+\newcommand{\nt}{非終端記号}
+\newcommand{\opennt}{openな\nt}
+\newcommand{\closednt}{closedな\nt}
 
 
 \newcommand{\thetitle}{Recurrent Neural Network Grammers}
 \title{\thetitle}
-\institute{知能数理研究室}
-\author{外山洋太、三輪誠、佐々木裕}
-\date{\today}
+\author[Chris Dyer et al.]
+       {Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, \\ Noah A. Smith}
 
 
 \newcommand{\bigger}{\Large}
@@ -45,7 +47,7 @@
       \item 問題：構文解析、文生成
       \item 動機：SequentialなRecurrent Neural Networks (RNNs)は \\
             自然言語の潜在的な入れ子構造を考慮できていない
-      \item 構文解析（文 \rightarrow~構文木）と文生成のアルゴリズム
+      \item 構文解析または文生成のアルゴリズム
     \end{itemize}
   \end{block}
 \end{frame}
@@ -54,10 +56,9 @@
   \begin{block}{RNNGの定義}
     \begin{gather*}
       RNNG := (N, \Sigma, \Theta) \\
-      N \cup \Sigma = \emptyset \\
       \begin{cases}
-        N: \text{非終端記号の有限集合} \\
-        \Sigma: \text{終端記号の有限集合} \\
+        N: \text{\nt の有限集合} \\
+        \Sigma: \text{\term の有限集合} (N \cup \Sigma = \emptyset) \\
         \Theta: \text{NNのパラメータ}
       \end{cases}
     \end{gather*}
@@ -69,15 +70,27 @@
     \begin{gather*}
       f: X \rightarrow Y \\
       \begin{cases}
-        x: \text{単語列（入力）} \\
+        x: \text{\term （単語）の列（入力）} \\
         y: \text{構文木（出力）} \\
         S: \text{スタック} \\
         B: \text{入力バッファ}
       \end{cases}
     \end{gather*}
     \begin{itemize}
-      \item 入力バッファの要素：まだ使われていない終端記号
-      \item スタックの要素：終端記号、\opennt、完成した非終端記号
+      \item スタックの要素：\term、openまたはclosedな\nt
+      \item 入力バッファの要素：\term
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{itemize}
+      \item 初期状態
+        \begin{gather*}
+          S = \emptyset \\
+          B = [T_1, \ldots, T_n] \\
+        \end{gather*}
     \end{itemize}
   \end{block}
 \end{frame}
@@ -93,14 +106,15 @@
           \begin{tabular}{c | l}
             遷移 & 制約 \\
             \hline
-            NT(X)   & $B \neq \emptyset \wedge n < 100$ \\
+            nt(X)   & $B \neq \emptyset \wedge n < 100$ \\
             \hline
             SHIFT   & $B \neq \emptyset \wedge n \geq 1$ \\
             \hline
-            REDUCE  & \parbox{20em}{
-              $スタック内の一番上の要素が \\ \opennt でない$ \\
-              $\wedge (n \geq 2 \vee B = \emptyset)$
-            } \\
+            REDUCE  & \parbox{20em}{$
+              \text{スタック内の一番上の要素が} \\
+              \text{\opennt でない} \\
+              \wedge (n \geq 2 （1じゃないの？） \vee B = \emptyset)
+            $} \\
           \end{tabular}
         \end{table}
     \end{itemize}
@@ -108,7 +122,37 @@
 \end{frame}
 
 \begin{frame}{提案手法}
-  \begin{block}{生成のアルゴリズム}
+  \begin{block}{文生成のアルゴリズム}
+    \begin{gather*}
+      f: X \rightarrow Y \\
+      \begin{cases}
+        x: ? \\
+        y: \text{\term （単語）の列（出力）} \\
+        S: \text{スタック} \\
+        \fire{T: \text{出力バッファ}}
+      \end{cases}
+    \end{gather*}
+    \begin{itemize}
+      \item スタックの要素：\term、openまたはclosedな\nt
+      \item 出力バッファの要素：\term
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{文生成のアルゴリズム}
+    \begin{itemize}
+      \item 初期状態
+        \begin{gather*}
+          S = \emptyset \\
+          T = \emptyset \\
+        \end{gather*}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{文生成のアルゴリズム}
     \begin{itemize}
       \item 遷移の制約
         \begin{itemize}
@@ -121,8 +165,8 @@
             GEN(X) & $n \geq 1$ \\
             \hline
             REDUCE  & \parbox{20em}{$
-              スタック内の一番上の要素が \\
-              \opennt でない \\
+              \text{スタック内の一番上の要素が} \\
+              \text{\opennt でない} \\
               \wedge n \geq 1
             $} \\
           \end{tabular}
@@ -130,6 +174,7 @@
     \end{itemize}
   \end{block}
 \end{frame}
+
 
 % \begin{frame}{\thetitle}
 %   \only<1>{
