@@ -1,0 +1,176 @@
+\documentclass[aspectratio=43,unicode,10pt]{beamer}
+\usetheme{ttipresentation}
+
+\usepackage{luatexja}
+\usepackage{luatexja-fontspec}
+\usepackage{graphicx}
+\usepackage{multicol}
+
+\setmainjfont{ipagp.otf}
+\beamertemplatenavigationsymbolsempty
+
+\newcommand{\itemtitle}[1]{\textbf{#1}\\}
+\newcommand{\fire}[1]{\textcolor{red}{\textbf{#1}}}
+%\newcommand{\freeze}[1]{\textcolor{blue}{\textbf{#1}}}
+\newcommand{\then}{\textcolor{ttiblue}{\textbf{⇒}}\hspace{1ex}}
+\newcommand{\good}{\textcolor{orange}{\textbf{◎}}\hspace{1ex}}
+\newcommand{\arrow}{\textcolor{ttiblue}{\textbf{→}}\hspace{1ex}}
+\newcommand{\mb}[1]{\mathbf{#1}}
+\newcommand{\arrowed}[1]{\vec{\mathbf{#1}}}
+\newcommand{\opennt}{未完成の非終端記号}
+
+
+\newcommand{\thetitle}{Recurrent Neural Network Grammers}
+\title{\thetitle}
+\institute{知能数理研究室}
+\author{外山洋太、三輪誠、佐々木裕}
+\date{\today}
+
+
+\newcommand{\bigger}{\Large}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{導入}
+  \begin{block}{\thetitle~(RNNGs)}
+    \begin{itemize}
+      \item 文の確率的生成モデル
+        \begin{itemize}
+          \item \fire{単語や句の入れ子的・階層的構造を陽に表現}
+        \end{itemize}
+      \item 問題：構文解析、文生成
+      \item 動機：SequentialなRecurrent Neural Networks (RNNs)は \\
+            自然言語の潜在的な入れ子構造を考慮できていない
+      \item 構文解析（文 \rightarrow~構文木）と文生成のアルゴリズム
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{RNNGの定義}
+    \begin{gather*}
+      RNNG := (N, \Sigma, \Theta) \\
+      N \cup \Sigma = \emptyset \\
+      \begin{cases}
+        N: \text{非終端記号の有限集合} \\
+        \Sigma: \text{終端記号の有限集合} \\
+        \Theta: \text{NNのパラメータ}
+      \end{cases}
+    \end{gather*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{gather*}
+      f: X \rightarrow Y \\
+      \begin{cases}
+        x: \text{単語列（入力）} \\
+        y: \text{構文木（出力）} \\
+        S: \text{スタック} \\
+        B: \text{入力バッファ}
+      \end{cases}
+    \end{gather*}
+    \begin{itemize}
+      \item 入力バッファの要素：まだ使われていない終端記号
+      \item スタックの要素：終端記号、\opennt、完成した非終端記号
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{itemize}
+      \item 遷移の制約
+        \begin{itemize}
+          \item $n$: スタック内の\opennt の数
+        \end{itemize}
+        \begin{table}
+          \begin{tabular}{c | l}
+            遷移 & 制約 \\
+            \hline
+            NT(X)   & $B \neq \emptyset \wedge n < 100$ \\
+            \hline
+            SHIFT   & $B \neq \emptyset \wedge n \geq 1$ \\
+            \hline
+            REDUCE  & \parbox{20em}{
+              $スタック内の一番上の要素が \\ \opennt でない$ \\
+              $\wedge (n \geq 2 \vee B = \emptyset)$
+            } \\
+          \end{tabular}
+        \end{table}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{生成のアルゴリズム}
+    \begin{itemize}
+      \item 遷移の制約
+        \begin{itemize}
+          \item $n$: スタック内の\opennt の数
+        \end{itemize}
+        \begin{table}
+          \begin{tabular}{c | l}
+            遷移 & 制約 \\
+            \hline
+            GEN(X) & $n \geq 1$ \\
+            \hline
+            REDUCE  & \parbox{20em}{$
+              スタック内の一番上の要素が \\
+              \opennt でない \\
+              \wedge n \geq 1
+            $} \\
+          \end{tabular}
+        \end{table}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+% \begin{frame}{\thetitle}
+%   \only<1>{
+%     \begin{itemize}
+%       \bigger
+%       \item タスク：商品レビューの\fire{レーティング予測}
+%       \item \fire{レビュー解析}：レビューのどの部分が重要か
+%     \end{itemize}
+
+%     \begin{figure}
+%       \includegraphics[width=0.8\linewidth]{fig/review.pdf}
+%     \end{figure}
+%   }
+
+%   \only<2>{
+%     \begin{itemize}
+%       \bigger
+%       \item 対象言語：以下の種類の文字を含む言語
+%     \end{itemize}
+%     \begin{figure}
+%       \includegraphics[width=0.75\linewidth]{fig/logogram_and_ideogram.pdf}
+%     \end{figure}
+%     \begin{itemize}
+%       \bigger
+%       \item モデル: \fire{フォント画像} \arrow 文字埋め込み \\
+%                     \arrow 単語、文、文書埋め込み \arrow レーティング
+%     \end{itemize}
+%   }
+
+%   \only<3>{
+%     \begin{itemize}
+%       \bigger
+%       \item 解析結果
+%     \end{itemize}
+%     \begin{figure}
+%       \includegraphics[width=0.8\linewidth]{fig/review_1.png}
+%     \end{figure}\vspace{-2ex} % HACK
+%     \begin{figure}
+%       \includegraphics[width=0.7\linewidth]{fig/review_2.png}
+%     \end{figure}
+%   }
+% \end{frame}
+
+\end{document}
