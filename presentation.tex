@@ -175,6 +175,47 @@
   \end{block}
 \end{frame}
 
+\begin{frame}{提案手法}
+  \begin{block}{生成モデル}
+    \begin{itemize}
+      \item 単語列（$x$）と構文木（$y$）の結合確率
+    \end{itemize}
+    \begin{align*}
+      p(x, y) & = \prod_{t=1}^{|a(x, y)|} p(a_t | a_{<t}) \\
+              & = \prod_{t=1}^{|a(x, y)|}
+                  \frac{exp r_{a_t}^T u_t + b_{a_t}}
+                      {\sum_{a' \in A_G(T_t, S_t, n_t)}
+                        exp r_{a'}^T u_t + b_{a'}} \\
+      u_t & = \tanh (W[o_t; s_t; h_t] + c)
+    \end{align*}
+    \begin{gather*}
+      \begin{cases}
+        u_t: \text{アルゴリズムの状態を表す埋め込み} \\
+        r_a: \text{各遷移の埋め込み（パラメータ）} \\
+        b_a: \text{各遷移のバイアス（パラメータ）} \\
+      \end{cases}
+    \end{gather*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{生成モデル}
+    \begin{itemize}
+      \item $u_t$: アルゴリズムの状態を表す埋め込み
+    \end{itemize}
+    \begin{align*}
+      u_t & = \tanh (W[o_t; s_t; h_t] + c)
+    \end{align*}
+    \begin{gather*}
+      \begin{cases}
+        o_t: \text{出力バッファの状態を表す埋め込み} \\
+        s_t: \text{スタックの状態を表す埋め込み} \\
+        h_t: \text{遷移歴を表す埋め込み} \\
+        W, c: \text{パラメータ}
+      \end{cases}
+    \end{gather*}
+  \end{block}
+\end{frame}
 
 % \begin{frame}{\thetitle}
 %   \only<1>{
