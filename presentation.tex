@@ -11,12 +11,9 @@
 
 \newcommand{\itemtitle}[1]{\textbf{#1}\\}
 \newcommand{\fire}[1]{\textcolor{red}{\textbf{#1}}}
-%\newcommand{\freeze}[1]{\textcolor{blue}{\textbf{#1}}}
 \newcommand{\then}{\textcolor{ttiblue}{\textbf{⇒}}\hspace{1ex}}
 \newcommand{\good}{\textcolor{orange}{\textbf{◎}}\hspace{1ex}}
 \newcommand{\arrow}{\textcolor{ttiblue}{\textbf{→}}\hspace{1ex}}
-\newcommand{\mb}[1]{\mathbf{#1}}
-\newcommand{\arrowed}[1]{\vec{\mathbf{#1}}}
 \newcommand{\term}{終端記号}
 \newcommand{\nt}{非終端記号}
 \newcommand{\opennt}{openな\nt}
@@ -29,7 +26,6 @@
        {Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, \\ Noah A. Smith}
 
 
-\newcommand{\bigger}{\Large}
 
 \begin{document}
 
@@ -40,17 +36,19 @@
 \begin{frame}{導入}
   \begin{block}{\thetitle~(RNNGs)}
     \begin{itemize}
-      \item 文の確率的生成モデル
+      \item Recurrent Neural Network (RNN)による文法のモデル
         \begin{itemize}
           \item \fire{単語や句の入れ子的・階層的構造を陽に表現}
         \end{itemize}
-      \item 問題：構文解析、文生成
-      \item 動機：SequentialなRecurrent Neural Networks (RNNs)は \\
-            自然言語の潜在的な入れ子構造を考慮できていない
-      \item 構成要素
+      \item 構文解析または文生成のアルゴリズムを用いて学習・推定
+      \item タスク：構文解析、言語モデル
+      \item 関連研究
         \begin{itemize}
-          \item 構文解析または文生成のアルゴリズム
-          \item NNによる生成モデル
+          \item SequentialなRecurrent Neural Networks (RNNs)は \\
+                自然言語の潜在的な入れ子構造を考慮できていない \\
+                \arrow Recursive NNの手法を取り入れる
+          \item 既存のNNによる手法は左隅構文解析のボトムアップ型 \\
+                \arrow 状態遷移に基づいた\fire{トップダウン型}のアルゴリズム
         \end{itemize}
     \end{itemize}
   \end{block}
@@ -72,7 +70,6 @@
 \begin{frame}{提案手法}
   \begin{block}{構文解析のアルゴリズム}
     \begin{gather*}
-      f: X \rightarrow Y \\
       \begin{cases}
         x: \text{\term （単語）の列（入力）} \\
         y: \text{構文木（出力）} \\
@@ -85,8 +82,10 @@
       \item 入力バッファの要素：\term
       \item 初期状態
         \begin{gather*}
-          S = \emptyset \\
-          B = [T_1, \ldots, T_n] \\
+          \begin{cases}
+            S = \emptyset \\
+            B = [T_1, \ldots, T_n] \\
+          \end{cases}
         \end{gather*}
     \end{itemize}
   \end{block}
@@ -94,6 +93,9 @@
 
 \begin{frame}{提案手法}
   \begin{block}{構文解析のアルゴリズム}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{fig/fig_1.png}
+    \end{figure}
     \begin{itemize}
       \item 遷移の制約
         \begin{itemize}
@@ -121,11 +123,7 @@
 \begin{frame}{提案手法}
   \begin{block}{構文解析のアルゴリズム}
     \begin{figure}
-      \includegraphics[width=0.9\textwidth]{fig/fig_1.png}
-    \end{figure}
-    \vspace{-1.5em} % HACK
-    \begin{figure}
-      \includegraphics[width=0.9\textwidth]{fig/fig_2.png}
+      \includegraphics[width=\textwidth]{fig/fig_2.png}
     \end{figure}
   \end{block}
 \end{frame}
@@ -134,7 +132,8 @@
   \begin{block}{文生成のアルゴリズム}
     \begin{gather*}
       \begin{cases}
-        y: \text{\term （単語）の列（出力）} \\
+        x: \text{\term （単語）の列\fire{（出力）}} \\
+        y: \text{構文木（出力）} \\
         S: \text{スタック} \\
         \fire{T: \text{出力バッファ}}
       \end{cases}
@@ -144,8 +143,10 @@
       \item 出力バッファの要素：\term
       \item 初期状態
         \begin{gather*}
-          S = \emptyset \\
-          T = \emptyset \\
+          \begin{cases}
+            S = \emptyset \\
+            T = \emptyset \\
+          \end{cases}
         \end{gather*}
     \end{itemize}
   \end{block}
@@ -153,6 +154,9 @@
 
 \begin{frame}{提案手法}
   \begin{block}{文生成のアルゴリズム}
+    \begin{figure}
+        \includegraphics[width=\textwidth]{fig/fig_3.png}
+    \end{figure}
     \begin{itemize}
       \item 遷移の制約
         \begin{itemize}
@@ -178,11 +182,7 @@
 \begin{frame}{提案手法}
   \begin{block}{文生成のアルゴリズム}
     \begin{figure}
-        \includegraphics[width=0.9\textwidth]{fig/fig_3.png}
-    \end{figure}
-    \vspace{-1.5em} % HACK
-    \begin{figure}
-        \includegraphics[width=0.9\textwidth]{fig/fig_4.png}
+        \includegraphics[width=\textwidth]{fig/fig_4.png}
     \end{figure}
   \end{block}
 \end{frame}
@@ -193,18 +193,15 @@
       \item 最大化: $p(X, Y; \Theta)$
       \item 単語列（$x$）と構文木（$y$）の結合確率
     \end{itemize}
-    \begin{align*}
-      p(x, y) & = \prod_{t=1}^{|a(x, y)|} p(a_t | a_{<t}) \\
-              & = \prod_{t=1}^{|a(x, y)|}
-                  \frac{\exp r_{a_t}^T u_t + b_{a_t}}
-                      {\sum_{a' \in A_G(T_t, S_t, n_t)}
-                        \exp r_{a'}^T u_t + b_{a'}} \\
-    \end{align*}
     \begin{gather*}
+      p(x, y) = \prod_{t=1}^{|a(x, y)|} p(a_t | a_{<t}) \\
+      p(a_t | a_{<t})
+      = \frac{\exp r_{a_t}^T u_t + b_{a_t}}
+        {\sum_{a' \in A_G(T_t, S_t, n_t)} \exp r_{a'}^T u_t + b_{a'}} \\
       \begin{cases}
         u_t: \text{アルゴリズムの状態を表す埋め込み} \\
-        r_a: \text{各遷移の埋め込み（パラメータ）} \\
-        b_a: \text{各遷移のバイアス（パラメータ）} \\
+        r_a: \text{生成器の各行動の埋め込み（パラメータ）} \\
+        b_a: \text{生成器の各行動のバイアス（パラメータ）} \\
       \end{cases}
     \end{gather*}
   \end{block}
@@ -242,7 +239,7 @@
     \begin{itemize}
       \item Syntactic Composition Function
         \begin{itemize}
-          \item REDUCE時に要素の埋め込みからその\nt の埋め込みを生成
+          \item REDUCE時に要素の埋め込みから\\その\nt の埋め込みを生成
         \end{itemize}
     \end{itemize}
     \begin{figure}
@@ -251,19 +248,70 @@
   \end{block}
 \end{frame}
 
+\begin{frame}<presentation:0>{提案手法}
+  \begin{block}{生成モデルにおける単語の推定}
+    \begin{itemize}
+      \item Class factored softmax
+        \begin{itemize}
+          \item $|\Sigma|$：語彙数
+          \item 単語の推定において計算量を$\sqrt{|\Sigma|}$に抑える
+          \item
+        \end{itemize}
+        \begin{gather*}
+          p(x) = p(x|c)p(c)
+        \end{gather*}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{生成モデルにおける重点サンプリング}
+    \begin{itemize}
+      \item 提案分布$q(y|x)$：識別モデルを利用
+      \item 重要度重み：$w(x, y) = p(x, y) / q(y | x)$
+      \item 文生成
+        \begin{align*}
+          p(x)
+          & = \sum_{y \in \mathcal{Y}(x)} p(x, y) \\
+          & = \sum_{y \in \mathcal{Y}(x)} q(x|y) w(x, y) \\
+          & = E_{q(x|y)} w(x, y)
+        \end{align*}
+      \item 構文解析
+        \begin{gather*}
+          \hat{y} = \text{argmax}_{y \sim q(y|x)} p(x, y)
+        \end{gather*}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
 \begin{frame}{提案手法}
   \begin{block}{識別モデル}
     \begin{itemize}
-      \item 出力バッファ$T$を入力バッファ$B$に置き換えて学習
+      \item 最大化: $p(Y | X; \Theta)$
+      \item 生成モデルの出力バッファ$T$を入力バッファ$B$に置き換え
+      \item 単語列$x$が与えられているため、 \\
+            先ほどの$p(x, y)$を$p(y|x)$として学習
     \end{itemize}
   \end{block}
 \end{frame}
 
 \begin{frame}{実験}
   \begin{block}{実験設定}
-    \begin{figure}
-      \includegraphics[width=0.8\textwidth]{fig/tab_1.png}
-    \end{figure}
+    \begin{itemize}
+      \item データセット
+        \begin{itemize}
+          \item Penn Treebank（英語）
+          \item Penn Chinese Treebank（中国語）
+        \end{itemize}
+      \item タスク
+        \begin{itemize}
+          \item 構文解析（生成・識別モデル）
+          \item 言語モデル（生成モデル）
+        \end{itemize}
+    \end{itemize}
+    % \begin{figure}
+    %   \includegraphics[width=0.8\textwidth]{fig/tab_1.png}
+    % \end{figure}
   \end{block}
 \end{frame}
 
@@ -293,7 +341,7 @@
 
 \begin{frame}{まとめ}
   \begin{itemize}
-    \item RNNの重みによって定義される"文法"を提案
+    \item RNNによる文法のモデルを提案
     \item 遷移ベースの構文解析・文生成アルゴリズムで学習
     \item 生成モデルと識別モデルの2種類
       % \begin{itemize}
