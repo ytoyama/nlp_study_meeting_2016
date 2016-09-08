@@ -110,7 +110,7 @@
             REDUCE  & \parbox{20em}{$
               \text{スタック内の一番上の要素が} \\
               \text{\opennt でない} \\
-              \wedge (n \geq 2 （1じゃないの？） \vee B = \emptyset)
+              \wedge (n \geq 2 \vee B = \emptyset)
             $} \\
           \end{tabular}
         \end{table}
@@ -133,9 +133,7 @@
 \begin{frame}{提案手法}
   \begin{block}{文生成のアルゴリズム}
     \begin{gather*}
-      f: X \rightarrow Y \\
       \begin{cases}
-        x: ? \\
         y: \text{\term （単語）の列（出力）} \\
         S: \text{スタック} \\
         \fire{T: \text{出力バッファ}}
@@ -192,6 +190,7 @@
 \begin{frame}{提案手法}
   \begin{block}{生成モデル}
     \begin{itemize}
+      \item 最大化: $p(X, Y; \Theta)$
       \item 単語列（$x$）と構文木（$y$）の結合確率
     \end{itemize}
     \begin{align*}
@@ -200,7 +199,6 @@
                   \frac{\exp r_{a_t}^T u_t + b_{a_t}}
                       {\sum_{a' \in A_G(T_t, S_t, n_t)}
                         \exp r_{a'}^T u_t + b_{a'}} \\
-      u_t & = \tanh (W[o_t; s_t; h_t] + c)
     \end{align*}
     \begin{gather*}
       \begin{cases}
@@ -231,46 +229,86 @@
   \end{block}
 \end{frame}
 
-% \begin{frame}{\thetitle}
-%   \only<1>{
-%     \begin{itemize}
-%       \bigger
-%       \item タスク：商品レビューの\fire{レーティング予測}
-%       \item \fire{レビュー解析}：レビューのどの部分が重要か
-%     \end{itemize}
+\begin{frame}{提案手法}
+  \begin{block}{生成モデル}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{fig/fig_5.png}
+    \end{figure}
+  \end{block}
+\end{frame}
 
-%     \begin{figure}
-%       \includegraphics[width=0.8\linewidth]{fig/review.pdf}
-%     \end{figure}
-%   }
+\begin{frame}{提案手法}
+  \begin{block}{生成モデル}
+    \begin{itemize}
+      \item Syntactic Composition Function
+        \begin{itemize}
+          \item REDUCE時に要素の埋め込みからその\nt の埋め込みを生成
+        \end{itemize}
+    \end{itemize}
+    \begin{figure}
+      \includegraphics[width=0.8\textwidth]{fig/fig_6.png}
+    \end{figure}
+  \end{block}
+\end{frame}
 
-%   \only<2>{
-%     \begin{itemize}
-%       \bigger
-%       \item 対象言語：以下の種類の文字を含む言語
-%     \end{itemize}
-%     \begin{figure}
-%       \includegraphics[width=0.75\linewidth]{fig/logogram_and_ideogram.pdf}
-%     \end{figure}
-%     \begin{itemize}
-%       \bigger
-%       \item モデル: \fire{フォント画像} \arrow 文字埋め込み \\
-%                     \arrow 単語、文、文書埋め込み \arrow レーティング
-%     \end{itemize}
-%   }
+\begin{frame}{提案手法}
+  \begin{block}{識別モデル}
+    \begin{itemize}
+      \item 出力バッファ$T$を入力バッファ$B$に置き換えて学習
+    \end{itemize}
+  \end{block}
+\end{frame}
 
-%   \only<3>{
-%     \begin{itemize}
-%       \bigger
-%       \item 解析結果
-%     \end{itemize}
-%     \begin{figure}
-%       \includegraphics[width=0.8\linewidth]{fig/review_1.png}
-%     \end{figure}\vspace{-2ex} % HACK
-%     \begin{figure}
-%       \includegraphics[width=0.7\linewidth]{fig/review_2.png}
-%     \end{figure}
-%   }
-% \end{frame}
+\begin{frame}{実験}
+  \begin{block}{実験設定}
+    \begin{figure}
+      \includegraphics[width=0.8\textwidth]{fig/tab_1.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\begin{frame}{実験}
+  \begin{block}{Penn TreebankでのF値}
+    \begin{figure}
+      \includegraphics[width=0.575\textwidth]{fig/tab_2.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\begin{frame}{実験}
+  \begin{block}{Penn Chinese TreebankでのF値}
+    \begin{figure}
+      \includegraphics[width=0.6\textwidth]{fig/tab_3.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\begin{frame}{実験}
+  \begin{block}{言語モデルのperplexity}
+    \begin{figure}
+      \includegraphics[width=0.7\textwidth]{fig/tab_4.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\begin{frame}{まとめ}
+  \begin{itemize}
+    \item RNNの重みによって定義される"文法"を提案
+    \item 遷移ベースの構文解析・文生成アルゴリズムで学習
+    \item 生成モデルと識別モデルの2種類
+      % \begin{itemize}
+      %   \item 生成モデル：言語モデル、構文解析
+      %   \item 識別モデル：構文解析
+      % \end{itemize}
+    \item 特徴量の設計やTreebankデータの変換が要らない
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{感想}
+  \begin{itemize}
+    \item 構文解析はよく知らなかったので勉強になった
+    \item SyntaxNetの論文等も読みたくなった
+  \end{itemize}
+\end{frame}
 
 \end{document}
