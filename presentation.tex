@@ -22,8 +22,10 @@
 
 \newcommand{\thetitle}{Recurrent Neural Network Grammers}
 \title{\thetitle}
-\author[Chris Dyer et al.]
-       {Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, \\ Noah A. Smith}
+\newcommand{\theauthors}{Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, Noah A. Smith.}
+% \author[Chris Dyer et al.]{\theauthors \\ \vspace{2ex}
+%                            豊田工業大学 知能数理研究室 外山洋太}
+\author{豊田工業大学 知能数理研究室 外山洋太}
 
 
 
@@ -36,20 +38,27 @@
 \begin{frame}{導入}
   \begin{block}{\thetitle~(RNNGs)}
     \begin{itemize}
-      \item Recurrent Neural Network (RNN)による文法のモデル
-        \begin{itemize}
-          \item \fire{単語や句の入れ子的・階層的構造を陽に表現}
-        \end{itemize}
-      \item 構文解析または文生成のアルゴリズムを用いて学習・推定
-      \item タスク：構文解析、言語モデル
-      \item 関連研究
-        \begin{itemize}
-          \item SequentialなRecurrent Neural Networks (RNNs)は \\
-                自然言語の潜在的な入れ子構造を考慮できていない \\
-                \arrow Recursive NNの手法を取り入れる
-          \item 既存のNNによる手法は左隅構文解析のボトムアップ型 \\
-                \arrow 状態遷移に基づいた\fire{トップダウン型}のアルゴリズム
-        \end{itemize}
+      \only<1>{
+        \item 著者：\theauthors
+        \item 所属：Carnegie Mellon University, Pompeu Fabra University, University of Washington
+        \item 学会：NAACL 2016
+      }
+      \only<2>{
+        \item Recurrent Neural Network (RNN)による文法のモデル
+          \begin{itemize}
+            \item \fire{単語や句の入れ子的・階層的構造を陽に表現}
+          \end{itemize}
+        \item 構文解析または文生成のアルゴリズムを用いて学習・推定
+        \item タスク：構文解析、言語モデル
+        \item 関連研究
+          \begin{itemize}
+            \item SequentialなRecurrent Neural Networks (RNNs)は \\
+                  自然言語の潜在的な入れ子構造を考慮できていない \\
+                  \arrow Recursive NNの手法を取り入れる
+            \item 既存のNNによる手法は左隅構文解析のボトムアップ型 \\
+                  \arrow 状態遷移に基づいた\fire{トップダウン型}のアルゴリズム
+          \end{itemize}
+      }
     \end{itemize}
   \end{block}
 \end{frame}
@@ -265,6 +274,17 @@
 \end{frame}
 
 \begin{frame}{提案手法}
+  \begin{block}{識別モデル}
+    \begin{itemize}
+      \item 最大化: $p(Y | X; \Theta)$
+      \item 生成モデルの出力バッファ$T$を入力バッファ$B$に置き換え
+      \item 単語列$x$が与えられているため、 \\
+            先ほどの$p(x, y)$を$p(y|x)$として学習
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
   \begin{block}{生成モデルにおける重点サンプリング}
     \begin{itemize}
       \item 提案分布$q(y|x)$：識別モデルを利用
@@ -273,24 +293,13 @@
         \begin{align*}
           p(x)
           & = \sum_{y \in \mathcal{Y}(x)} p(x, y) \\
-          & = \sum_{y \in \mathcal{Y}(x)} q(x|y) w(x, y) \\
+          & = \sum_{y \in \mathcal{Y}(x)} q(y|x) w(x, y) \\
           & = E_{q(x|y)} w(x, y)
         \end{align*}
       \item 構文解析
         \begin{gather*}
           \hat{y} = \text{argmax}_{y \sim q(y|x)} p(x, y)
         \end{gather*}
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}{提案手法}
-  \begin{block}{識別モデル}
-    \begin{itemize}
-      \item 最大化: $p(Y | X; \Theta)$
-      \item 生成モデルの出力バッファ$T$を入力バッファ$B$に置き換え
-      \item 単語列$x$が与えられているため、 \\
-            先ほどの$p(x, y)$を$p(y|x)$として学習
     \end{itemize}
   \end{block}
 \end{frame}
@@ -355,7 +364,6 @@
 \begin{frame}{感想}
   \begin{itemize}
     \item 構文解析はよく知らなかったので勉強になった
-    \item SyntaxNetの論文等も読みたくなった
   \end{itemize}
 \end{frame}
 
