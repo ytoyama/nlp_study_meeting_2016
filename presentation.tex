@@ -14,6 +14,8 @@
 \newcommand{\then}{\textcolor{ttiblue}{\textbf{⇒}}\hspace{1ex}}
 \newcommand{\good}{\textcolor{orange}{\textbf{◎}}\hspace{1ex}}
 \newcommand{\arrow}{\textcolor{ttiblue}{\textbf{→}}\hspace{1ex}}
+\DeclareMathAlphabet{\mathbfit}{OML}{cmm}{b}{it}
+\newcommand{\mb}{\mathbfit}
 \newcommand{\term}{終端記号}
 \newcommand{\nt}{非終端記号}
 \newcommand{\opennt}{openな\nt}
@@ -220,17 +222,19 @@
   \begin{block}{生成モデル}
     \begin{itemize}
       \item 最大化: $p(X, Y; \Theta)$
-      \item 単語列（$x$）と構文木（$y$）の結合確率
+      \item 単語列$\mb{x}$と構文木$\mb{y}$の結合確率
     \end{itemize}
     \begin{gather*}
-      p(x, y) = \prod_{t=1}^{|a(x, y)|} p(a_t | a_{<t}) \\
-      p(a_t | a_{<t})
-      = \frac{\exp (r_{a_t}^T u_t + b_{a_t})}
-        {\sum_{a' \in A_G(T_t, S_t, n_t)} \exp (r_{a'}^T u_t + b_{a'})} \\
+      p(\mb{x}, \mb{y}) = \prod_{t=1}^{|\mb{a}(\mb{x}, \mb{y})|}
+                          p(a_t | \mb{a}_{<t}) \\
+      p(a_t | \mb{a}_{<t})
+      = \frac{\exp (\mb{r}_{a_t}^T \mb{u}_t + b_{a_t})}
+        {\sum_{a' \in A_G(T_t, S_t, n_t)}
+         \exp (\mb{r}_{a'}^T \mb{u}_t + b_{a'})} \\
       \begin{cases}
-        a(x, y): \text{単語列$x$と構文木$y$に対応する行動の列} \\
-        u_t: \text{アルゴリズムの状態を表す埋め込み} \\
-        r_a: \text{生成器の各行動の埋め込み（パラメータ）} \\
+        \mb{a}(x, y): \text{単語列$x$と構文木$y$に対応する行動の列} \\
+        \mb{u}_t: \text{アルゴリズムの状態を表す埋め込み} \\
+        \mb{r}_a: \text{生成器の各行動の埋め込み（パラメータ）} \\
         b_a: \text{生成器の各行動のバイアス（パラメータ）} \\
       \end{cases}
     \end{gather*}
@@ -240,17 +244,17 @@
 \begin{frame}{提案手法}
   \begin{block}{生成モデル}
     \begin{itemize}
-      \item $u_t$: アルゴリズムの状態を表す埋め込み
+      \item $\mb{u}_t$: アルゴリズムの状態を表す埋め込み
     \end{itemize}
     \begin{align*}
-      u_t & = \tanh (W[o_t; s_t; h_t] + c)
+      \mb{u}_t & = \tanh (\mb{W}[\mb{o}_t; \mb{s}_t; \mb{h}_t] + \mb{c})
     \end{align*}
     \begin{gather*}
       \begin{cases}
-        o_t: \text{出力バッファの状態を表す埋め込み} \\
-        s_t: \text{スタックの状態を表す埋め込み} \\
-        h_t: \text{行動履歴を表す埋め込み} \\
-        W, c: \text{パラメータ}
+        \mb{o}_t: \text{出力バッファの状態を表す埋め込み} \\
+        \mb{s}_t: \text{スタックの状態を表す埋め込み} \\
+        \mb{h}_t: \text{行動履歴を表す埋め込み} \\
+        \mb{W}, \mb{c}: \text{パラメータ}
       \end{cases}
     \end{gather*}
   \end{block}
@@ -305,8 +309,8 @@
     \begin{itemize}
       \item 最大化: $p(Y | X; \Theta)$
       \item 生成モデルの出力バッファ$T$を入力バッファ$B$に置き換え
-      \item 単語列$x$が与えられているため、 \\
-            先ほどの$p(x, y)$を$p(y|x)$として学習
+      \item 単語列$\mb{x}$が与えられているため、 \\
+            先ほどの$p(\mb{x}, \mb{y})$を$p(\mb{y}|\mb{x})$として学習
     \end{itemize}
   \end{block}
 \end{frame}
@@ -314,19 +318,19 @@
 \begin{frame}{提案手法}
   \begin{block}{生成モデルにおける重点サンプリング}
     \begin{itemize}
-      \item 提案分布$q(y|x)$：識別モデルを利用
-      \item 重要度重み：$w(x, y) = p(x, y) / q(y | x)$
-      \item $y$を$q$からサンプリングしモンテカルロ法で計算
+      \item 提案分布$q(\mb{y}|\mb{x})$：識別モデルを利用
+      \item 重要度重み：$w(\mb{x}, \mb{y}) = p(\mb{x}, \mb{y}) / q(\mb{y} | \mb{x})$
+      \item $\mb{y}$を$q$からサンプリングしモンテカルロ法で計算
       \item 言語モデル
         \begin{align*}
-          p(x)
-          & = \sum_{y \in \mathcal{Y}(x)} p(x, y) \\
-          & = \sum_{y \in \mathcal{Y}(x)} q(y|x) w(x, y) \\
-          & = E_{q(y|x)} w(x, y)
+          p(\mb{x})
+          & = \sum_{\mb{y} \in \mathcal{Y}(\mb{x})} p(\mb{x}, \mb{y}) \\
+          & = \sum_{\mb{y} \in \mathcal{Y}(\mb{x})} q(\mb{y}|\mb{x}) w(\mb{x}, \mb{y}) \\
+          & = E_{q(\mb{y}|\mb{x})} w(\mb{x}, \mb{y})
         \end{align*}
       \item 構文解析
         \begin{gather*}
-          \hat{y} = \text{argmax}_{y \sim q(y|x)} p(x, y)
+          \hat{\mb{y}} = \text{argmax}_{\mb{y} \sim q(\mb{y}|\mb{x})} p(\mb{x}, \mb{y})
         \end{gather*}
     \end{itemize}
   \end{block}
