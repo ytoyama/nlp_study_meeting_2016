@@ -5,10 +5,6 @@ presentation_pdf = presentation.pdf
 figure_dir = fig
 
 
-.SUFFIXES: .xcf .png
-.xcf.png:
-	convert -density 1024 -quality 100 ${.IMPSRC} ${.TARGET}
-
 .SUFFIXES: .tex .pdf
 .tex.pdf:
 	: ${src::=${.IMPSRC:.tex=_tmp_by_make.tex}}

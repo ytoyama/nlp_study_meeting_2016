@@ -320,6 +320,7 @@
     \begin{itemize}
       \item 提案分布$q(y|x)$：識別モデルを利用
       \item 重要度重み：$w(x, y) = p(x, y) / q(y | x)$
+      \item $y$を$q$からサンプリングしモンテカルロ法で計算
       \item 文生成
         \begin{align*}
           p(x)
@@ -384,17 +385,14 @@
     \item RNNによる文法のモデルを提案
     \item 遷移ベースの構文解析・文生成アルゴリズムで学習
     \item 生成モデルと識別モデルの2種類
-      % \begin{itemize}
-      %   \item 生成モデル：言語モデル、構文解析
-      %   \item 識別モデル：構文解析
-      % \end{itemize}
-    \item 特徴量の設計やTreebankデータの変換が要らない
+    % \item 特徴量の設計やTreebankデータの変換が要らない
   \end{itemize}
 \end{frame}
 
 \begin{frame}{感想}
   \begin{itemize}
     \item 構文解析はよく知らなかったので勉強になった
+    \item 文法をNNでモデル化しようという発想が面白いと思った
   \end{itemize}
 \end{frame}
 
