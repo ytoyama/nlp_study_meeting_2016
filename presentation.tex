@@ -76,7 +76,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{提案手法}
+\begin{frame}<presentation:0>{提案手法}
   \begin{block}{構文解析のアルゴリズム}
     \begin{gather*}
       \begin{cases}
@@ -100,7 +100,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{提案手法}
+\begin{frame}<presentation:0>{提案手法}
   \begin{block}{構文解析のアルゴリズム}
     \begin{figure}
       \includegraphics[width=\textwidth]{fig/fig_1.png}
@@ -129,7 +129,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{提案手法}
+\begin{frame}<presentation:0>{提案手法}
   \begin{block}{構文解析のアルゴリズム}
     \begin{figure}
       \includegraphics[width=\textwidth]{fig/fig_2.png}
@@ -138,6 +138,18 @@
 \end{frame}
 
 \begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{figure}
+      \includegraphics[width=0.95\textwidth]{fig/fig_1.png}
+    \end{figure}
+    \vspace{-1.75ex} % HACK
+    \begin{figure}
+      \includegraphics[width=0.95\textwidth]{fig/fig_2.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
+\begin{frame}<presentation:0>{提案手法}
   \begin{block}{文生成のアルゴリズム}
     \begin{gather*}
       \begin{cases}
@@ -161,7 +173,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{提案手法}
+\begin{frame}<presentation:0>{提案手法}
   \begin{block}{文生成のアルゴリズム}
     \begin{figure}
         \includegraphics[width=\textwidth]{fig/fig_3.png}
@@ -188,8 +200,20 @@
   \end{block}
 \end{frame}
 
+\begin{frame}<presentation:0>{提案手法}
+  \begin{block}{文生成のアルゴリズム}
+    \begin{figure}
+        \includegraphics[width=\textwidth]{fig/fig_4.png}
+    \end{figure}
+  \end{block}
+\end{frame}
+
 \begin{frame}{提案手法}
   \begin{block}{文生成のアルゴリズム}
+    \begin{figure}
+        \includegraphics[width=\textwidth]{fig/fig_3.png}
+    \end{figure}
+    \vspace{-1ex} % HACK
     \begin{figure}
         \includegraphics[width=\textwidth]{fig/fig_4.png}
     \end{figure}
@@ -205,9 +229,10 @@
     \begin{gather*}
       p(x, y) = \prod_{t=1}^{|a(x, y)|} p(a_t | a_{<t}) \\
       p(a_t | a_{<t})
-      = \frac{\exp r_{a_t}^T u_t + b_{a_t}}
-        {\sum_{a' \in A_G(T_t, S_t, n_t)} \exp r_{a'}^T u_t + b_{a'}} \\
+      = \frac{\exp (r_{a_t}^T u_t + b_{a_t})}
+        {\sum_{a' \in A_G(T_t, S_t, n_t)} \exp (r_{a'}^T u_t + b_{a'})} \\
       \begin{cases}
+        a(x, y): \text{単語列$x$と構文木$y$に対応する行動の列} \\
         u_t: \text{アルゴリズムの状態を表す埋め込み} \\
         r_a: \text{生成器の各行動の埋め込み（パラメータ）} \\
         b_a: \text{生成器の各行動のバイアス（パラメータ）} \\
@@ -228,7 +253,7 @@
       \begin{cases}
         o_t: \text{出力バッファの状態を表す埋め込み} \\
         s_t: \text{スタックの状態を表す埋め込み} \\
-        h_t: \text{遷移歴を表す埋め込み} \\
+        h_t: \text{行動履歴を表す埋め込み} \\
         W, c: \text{パラメータ}
       \end{cases}
     \end{gather*}
@@ -237,9 +262,15 @@
 
 \begin{frame}{提案手法}
   \begin{block}{生成モデル}
+    \begin{itemize}
+      \item スタック・出力バッファ・行動履歴内の要素の埋め込みを\\エンコード
+    \end{itemize}
     \begin{figure}
-      \includegraphics[width=\textwidth]{fig/fig_5.png}
+      \includegraphics[width=\textwidth]{fig/fig_5.pdf}
     \end{figure}
+    \begin{itemize}
+      \item スタック内の非終端記号の埋め込みは？
+    \end{itemize}
   \end{block}
 \end{frame}
 
@@ -252,7 +283,7 @@
         \end{itemize}
     \end{itemize}
     \begin{figure}
-      \includegraphics[width=0.8\textwidth]{fig/fig_6.png}
+      \includegraphics[width=0.8\textwidth]{fig/fig_6.pdf}
     \end{figure}
   \end{block}
 \end{frame}
