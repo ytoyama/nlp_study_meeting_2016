@@ -30,16 +30,18 @@
 
 \begin{document}
 
-\begin{frame}{\thetitle}
-  \begin{itemize}
-    \item 著者：Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, \\
-                Noah A. Smith.
-    \item 所属：Carnegie Mellon University, Pompeu Fabra University, University of Washington
-    \item 学会：NAACL 2016
-  \end{itemize}
-  \begin{itemize}
-    \item 発表者：豊田工業大学 知能数理研究室 修士1年 外山洋太
-  \end{itemize}
+\begin{frame}
+  \centering
+  {\LARGE \thetitle \par}
+  \vspace{3ex}
+  Chris Dyer, Adhiguna Kuncoro, Miguel Ballesteros, Noah A. Smith \par
+  \vspace{0.5ex}
+  {\small Carnegie Mellon University, Pompeu Fabra University, \\ University of Washington \par
+  \vspace{0.5ex}
+  NAACL 2016 \par}
+  \vspace{3ex}
+  豊田工業大学 知能数理研究室 修士1年 外山洋太 \par
+  第8回最先端NLP勉強会
 \end{frame}
 
 \begin{frame}{導入}
@@ -78,59 +80,6 @@
 
 \begin{frame}<presentation:0>{提案手法}
   \begin{block}{構文解析のアルゴリズム}
-    \begin{gather*}
-      \begin{cases}
-        x: \text{\term （単語）の列（入力）} \\
-        y: \text{構文木（出力）} \\
-        S: \text{スタック} \\
-        B: \text{入力バッファ}
-      \end{cases}
-    \end{gather*}
-    \begin{itemize}
-      \item スタックの要素：\term、openまたはclosedな\nt
-      \item 入力バッファの要素：\term
-      \item 初期状態
-        \begin{gather*}
-          \begin{cases}
-            S = \emptyset \\
-            B = [T_1, \ldots, T_n] \\
-          \end{cases}
-        \end{gather*}
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}<presentation:0>{提案手法}
-  \begin{block}{構文解析のアルゴリズム}
-    \begin{figure}
-      \includegraphics[width=\textwidth]{fig/fig_1.png}
-    \end{figure}
-    \begin{itemize}
-      \item 遷移の制約
-        \begin{itemize}
-          \item $n$: スタック内の\opennt の数
-        \end{itemize}
-        \begin{table}
-          \begin{tabular}{c | l}
-            遷移 & 制約 \\
-            \hline
-            NT(X)   & $B \neq \emptyset \wedge n < 100$ \\
-            \hline
-            SHIFT   & $B \neq \emptyset \wedge n \geq 1$ \\
-            \hline
-            REDUCE  & \parbox{20em}{$
-              \text{スタック内の一番上の要素が} \\
-              \text{\opennt でない} \\
-              \wedge (n \geq 2 \vee B = \emptyset)
-            $} \\
-          \end{tabular}
-        \end{table}
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}<presentation:0>{提案手法}
-  \begin{block}{構文解析のアルゴリズム}
     \begin{figure}
       \includegraphics[width=\textwidth]{fig/fig_2.png}
     \end{figure}
@@ -146,57 +95,6 @@
     \begin{figure}
       \includegraphics[width=0.95\textwidth]{fig/fig_2.png}
     \end{figure}
-  \end{block}
-\end{frame}
-
-\begin{frame}<presentation:0>{提案手法}
-  \begin{block}{文生成のアルゴリズム}
-    \begin{gather*}
-      \begin{cases}
-        x: \text{\term （単語）の列\fire{（出力）}} \\
-        y: \text{構文木（出力）} \\
-        S: \text{スタック} \\
-        \fire{T: \text{出力バッファ}}
-      \end{cases}
-    \end{gather*}
-    \begin{itemize}
-      \item スタックの要素：\term、openまたはclosedな\nt
-      \item 出力バッファの要素：\term
-      \item 初期状態
-        \begin{gather*}
-          \begin{cases}
-            S = \emptyset \\
-            T = \emptyset \\
-          \end{cases}
-        \end{gather*}
-    \end{itemize}
-  \end{block}
-\end{frame}
-
-\begin{frame}<presentation:0>{提案手法}
-  \begin{block}{文生成のアルゴリズム}
-    \begin{figure}
-        \includegraphics[width=\textwidth]{fig/fig_3.png}
-    \end{figure}
-    \begin{itemize}
-      \item 遷移の制約
-        \begin{itemize}
-          \item $n$: スタック内の\opennt の数
-        \end{itemize}
-        \begin{table}
-          \begin{tabular}{c | l}
-            遷移 & 制約 \\
-            \hline
-            GEN(X) & $n \geq 1$ \\
-            \hline
-            REDUCE  & \parbox{20em}{$
-              \text{スタック内の一番上の要素が} \\
-              \text{\opennt でない} \\
-              \wedge n \geq 1
-            $} \\
-          \end{tabular}
-        \end{table}
-    \end{itemize}
   \end{block}
 \end{frame}
 
@@ -287,22 +185,6 @@
     \begin{figure}
       \includegraphics[width=0.8\textwidth]{fig/fig_6.pdf}
     \end{figure}
-  \end{block}
-\end{frame}
-
-\begin{frame}<presentation:0>{提案手法}
-  \begin{block}{生成モデルにおける単語の推定}
-    \begin{itemize}
-      \item Class factored softmax
-        \begin{itemize}
-          \item $|\Sigma|$：語彙数
-          \item 単語の推定において計算量を$\sqrt{|\Sigma|}$に抑える
-          \item
-        \end{itemize}
-        \begin{gather*}
-          p(x) = p(x|c)p(c)
-        \end{gather*}
-    \end{itemize}
   \end{block}
 \end{frame}
 
@@ -404,6 +286,131 @@
     \item 文法をNNでモデル化しようという発想が面白いと思った
     \item スタックのエンコードがsequentialの場合との比較が知りたい
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \centering \large 補足資料
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{gather*}
+      \begin{cases}
+        x: \text{\term （単語）の列（入力）} \\
+        y: \text{構文木（出力）} \\
+        S: \text{スタック} \\
+        B: \text{入力バッファ}
+      \end{cases}
+    \end{gather*}
+    \begin{itemize}
+      \item スタックの要素：\term、openまたはclosedな\nt
+      \item 入力バッファの要素：\term
+      \item 初期状態
+        \begin{gather*}
+          \begin{cases}
+            S = \emptyset \\
+            B = [T_1, \ldots, T_n] \\
+          \end{cases}
+        \end{gather*}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{構文解析のアルゴリズム}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{fig/fig_1.png}
+    \end{figure}
+    \begin{itemize}
+      \item 遷移の制約
+        \begin{itemize}
+          \item $n$: スタック内の\opennt の数
+        \end{itemize}
+        \begin{table}
+          \begin{tabular}{c | l}
+            遷移 & 制約 \\
+            \hline
+            NT(X)   & $B \neq \emptyset \wedge n < 100$ \\
+            \hline
+            SHIFT   & $B \neq \emptyset \wedge n \geq 1$ \\
+            \hline
+            REDUCE  & \parbox{20em}{$
+              \text{スタック内の一番上の要素が} \\
+              \text{\opennt でない} \\
+              \wedge (n \geq 2 \vee B = \emptyset)
+            $} \\
+          \end{tabular}
+        \end{table}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{文生成のアルゴリズム}
+    \begin{gather*}
+      \begin{cases}
+        x: \text{\term （単語）の列\fire{（出力）}} \\
+        y: \text{構文木（出力）} \\
+        S: \text{スタック} \\
+        \fire{T: \text{出力バッファ}}
+      \end{cases}
+    \end{gather*}
+    \begin{itemize}
+      \item スタックの要素：\term、openまたはclosedな\nt
+      \item 出力バッファの要素：\term
+      \item 初期状態
+        \begin{gather*}
+          \begin{cases}
+            S = \emptyset \\
+            T = \emptyset \\
+          \end{cases}
+        \end{gather*}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{文生成のアルゴリズム}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{fig/fig_3.png}
+    \end{figure}
+    \begin{itemize}
+      \item 遷移の制約
+        \begin{itemize}
+          \item $n$: スタック内の\opennt の数
+        \end{itemize}
+        \begin{table}
+          \begin{tabular}{c | l}
+            遷移 & 制約 \\
+            \hline
+            GEN(X) & $n \geq 1$ \\
+            \hline
+            REDUCE  & \parbox{20em}{$
+              \text{スタック内の一番上の要素が} \\
+              \text{\opennt でない} \\
+              \wedge n \geq 1
+            $} \\
+          \end{tabular}
+        \end{table}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{提案手法}
+  \begin{block}{生成モデルにおける単語の推定}
+    \begin{itemize}
+      \item Class-factored softmax
+        \begin{itemize}
+          \item $|\Sigma|$：語彙数
+          \item Brown et al., 2016の手法により語彙を \\
+                $\sqrt{|\Sigma|}$個のクラスタに分割
+          \item 単語の推定の計算量：$O(\sqrt{|\Sigma|})$
+        \end{itemize}
+        \begin{gather*}
+          p(x) = p(x|c)p(c)
+        \end{gather*}
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \end{document}
