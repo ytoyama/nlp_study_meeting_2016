@@ -146,10 +146,8 @@
     \begin{itemize}
       \item $\mb{u}_t$: アルゴリズムの状態を表す埋め込み
     \end{itemize}
-    \begin{align*}
-      \mb{u}_t & = \tanh (\mb{W}[\mb{o}_t; \mb{s}_t; \mb{h}_t] + \mb{c})
-    \end{align*}
     \begin{gather*}
+      \mb{u}_t = \tanh (\mb{W}[\mb{o}_t; \mb{s}_t; \mb{h}_t] + \mb{c}) \\
       \begin{cases}
         \mb{o}_t: \text{出力バッファの状態を表す埋め込み} \\
         \mb{s}_t: \text{スタックの状態を表す埋め込み} \\
@@ -399,16 +397,45 @@
 \begin{frame}{提案手法}
   \begin{block}{生成モデルにおける単語の推定}
     \begin{itemize}
-      \item Class-factored softmax
-        \begin{itemize}
-          \item $|\Sigma|$：語彙数
-          \item Brown et al., 2016の手法により語彙を \\
-                $\sqrt{|\Sigma|}$個のクラスタに分割
-          \item 単語の推定の計算量：$O(\sqrt{|\Sigma|})$
-        \end{itemize}
-        \begin{gather*}
-          p(x) = p(x|c)p(c)
-        \end{gather*}
+      \only<1>{
+        \item Class-factored softmax
+          \begin{itemize}
+            \item $\Sigma$：語彙
+            \item Brown et al., 1992の手法により語彙$\Sigma$を \\
+                  約$K = \sqrt{|\Sigma|}$個のクラスタに分割
+            \item 単語推定の計算量：$O(K)$
+          \end{itemize}
+          \begin{align*}
+            p(x_i | \mb{u}_t) & = p(x_i, c_i | \mb{u}_t) \\
+                         & = p(x_i | c_i, \mb{u}_t) p(c_i | \mb{u}_t)
+          \end{align*}
+          \par
+          \vspace{-5ex} % HACK
+          \begin{gather*}
+            \begin{cases}
+              x_i: \text{$i$番目に推定された単語} \\
+              c_i: \text{単語$x_i$を含むクラスタ} \\
+              \mb{u}_t: \text{生成器の状態を表す埋め込み} \\
+            \end{cases}
+          \end{gather*}
+      }
+      \only<2>{
+        \item Class-factored softmax（続き）
+          \begin{gather*}
+            p(x_i | c_i, \mb{u}_t)
+            = \frac{\exp(\phi(x_i, \mb{u}_t))}
+                   {\sum_{x \in c_i} \exp(\phi(x, \mb{u}_t))} \\
+            p(c_i | \mb{u}_t)
+            = \frac{\exp(\psi(c_i, \mb{u}_t))}
+                   {\sum_{j=1}^K \exp(\psi(c_j, \mb{u}_t))} \\
+            \phi(x, \mb{u}) = \mb{r}_x^T \mb{u} + b_x \\
+            \psi(c, \mb{u}) = \mb{s}_c^T \mb{u} + t_c \\
+            \begin{cases}
+              \mb{r}_x, b_x: \text{単語$x$によるパラメータ} \\
+              \mb{s}_c, t_c: \text{クラスタ$c$によるパラメータ}
+            \end{cases}
+          \end{gather*}
+      }
     \end{itemize}
   \end{block}
 \end{frame}
